@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-   @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Ukraine", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"].shuffled()
+   @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Ukraine", "Italy", "Nigeria", "Poland", "Pidarrussia", "Spain", "UK", "US"].shuffled()
     
     @State private var correctAsswer = Int.random(in: 0...2)
     
@@ -26,8 +26,7 @@ struct ContentView: View {
                 .ignoresSafeArea()
             VStack {
                 Text("Guess the flag")
-                    .foregroundColor(.white)
-                    .font(.largeTitle.bold())
+                    .titleStyle()
                 VStack(spacing:30) {
                     
                     VStack {
@@ -42,19 +41,14 @@ struct ContentView: View {
                         Button {
                             
                             count += 1
-                            print(count)
-                            if count >= 3 {
+                            if count >= 9 {
                                 endGame = true
                             } else {
                                 flagTapped(number: number)
                             }
                             
-                            print(count)
                         } label: {
-                            Image(countries[number])
-                                .renderingMode(.original)
-                                .clipShape(Capsule())
-                                .shadow(radius: 5)
+                            FlagImage(imageName: countries[number])
                         }
                         
                     }
@@ -119,5 +113,29 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+struct FlagImage: View {
+    var imageName: String
+    var body: some View {
+        Image(imageName)
+            .renderingMode(.original)
+            .clipShape(Capsule())
+            .shadow(radius: 5)
+    }
+}
+
+struct LargeBlue: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle.bold())
+            .foregroundColor(.white)
+    }
+    
+}
+extension View {
+    func titleStyle() -> some View {
+        modifier(LargeBlue())
     }
 }
