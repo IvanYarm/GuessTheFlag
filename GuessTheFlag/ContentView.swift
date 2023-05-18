@@ -18,7 +18,10 @@ struct ContentView: View {
     @State private var score = 0
     @State private var tappedCountry = ""
     @State private var count = 0
+    @State private var tabbedFlag: Int = 0
     
+    @State var enabled = false
+    @State private var animationAmount = 0.0
     
     var body: some View {
         ZStack {
@@ -40,19 +43,33 @@ struct ContentView: View {
                     ForEach(0..<3) { number in
                         Button {
                             
+                            tabbedFlag = number
+                            print(tabbedFlag)
                             count += 1
                             if count >= 9 {
                                 endGame = true
                             } else {
+                                
                                 flagTapped(number: number)
                             }
                             
                         } label: {
                             FlagImage(imageName: countries[number])
+                                
                         }
                         
+                        
                     }
+                  
+                    .rotation3DEffect(.degrees(enabled ? 180 : 0), axis: (x: 1, y: 0, z: 0))
+                    .scaleEffect(enabled ? 1.2 : 1.0)
+                    .animation(.easeOut(duration: 2), value: enabled)
+                    .rotation3DEffect(.degrees(animationAmount), axis: (x: 1, y: 0, z: 0))
+                    
+                  
+                    
                 }
+                
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 20)
                 .background(.thinMaterial)
@@ -91,16 +108,22 @@ struct ContentView: View {
     }
     func flagTapped(number: Int) {
         tappedCountry = countries[number]
-        print(tappedCountry)
+        number == tabbedFlag 
+            
+        
+     
         if number == correctAsswer {
+            
             scoreTitle = "Correct"
             score += 1
+        
         } else {
             scoreTitle = "Wrong"
         }
         showScore = true
     }
     func askQuestion() {
+        enabled.toggle()
         countries.shuffle()
         correctAsswer = Int.random(in: 0...2)
     }
@@ -123,6 +146,8 @@ struct FlagImage: View {
             .renderingMode(.original)
             .clipShape(Capsule())
             .shadow(radius: 5)
+            
+            
     }
 }
 
